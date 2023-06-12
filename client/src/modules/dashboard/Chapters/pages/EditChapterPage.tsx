@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
+import { Button } from '@chakra-ui/react';
 
 import {
   useDashboardChapterQuery,
@@ -58,16 +59,23 @@ export const EditChapterPage: NextPageWithLayout = () => {
     }
   };
 
+  const onCancel = () => {
+    router.push('/dashboard/chapters');
+  };
+
   const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
 
   return (
-    <ChapterForm
-      data={data}
-      onSubmit={onSubmit}
-      loadingText={'Saving Chapter Changes'}
-      submitText={'Save Chapter Changes'}
-    />
+    <div>
+      <ChapterForm
+        data={data}
+        onSubmit={onSubmit}
+        loadingText={'Saving Chapter Changes'}
+        submitText={'Save Chapter Changes'}
+      />
+      <Button onClick={onCancel}>Cancel Edit</Button>
+    </div>
   );
 };
 
