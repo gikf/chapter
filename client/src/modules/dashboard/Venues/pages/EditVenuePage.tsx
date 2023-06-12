@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 import NextError from 'next/error';
+import { Button } from '@chakra-ui/react';
 
 import {
   useVenueQuery,
@@ -57,6 +58,10 @@ export const EditVenuePage: NextPageWithLayout = () => {
     }
   };
 
+  const onCancel = () => {
+    router.push('/dashboard/venues');
+  };
+
   const hasLoaded = !!venueData && !!chapterData;
   const errors: Error[] = [];
   if (venueError) errors.push(venueError);
@@ -67,14 +72,17 @@ export const EditVenuePage: NextPageWithLayout = () => {
     return <NextError statusCode={404} title={'Page not found'} />;
 
   return (
-    <VenueForm
-      data={venueData}
-      chapterData={chapterData}
-      onSubmit={onSubmit}
-      submitText={'Save Venue Changes'}
-      chapterId={chapterId}
-      loadingText={'Saving Venue Changes'}
-    />
+    <div>
+      <VenueForm
+        data={venueData}
+        chapterData={chapterData}
+        onSubmit={onSubmit}
+        submitText={'Save Venue Changes'}
+        chapterId={chapterId}
+        loadingText={'Saving Venue Changes'}
+      />
+      <Button onClick={onCancel}>Cancel Edit</Button>
+    </div>
   );
 };
 
