@@ -1,6 +1,7 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
+import { Button } from '@chakra-ui/react';
 
 import {
   useDashboardEventQuery,
@@ -63,6 +64,10 @@ export const EditEventPage: NextPageWithLayout = () => {
     }
   };
 
+  const onCancel = () => {
+    router.push('/dashboard/events');
+  };
+
   const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.dashboardEvent)
@@ -76,19 +81,22 @@ export const EditEventPage: NextPageWithLayout = () => {
     };
   });
   return (
-    <EventForm
-      chapter={data.dashboardEvent.chapter}
-      data={{
-        ...rest,
-        sponsors: sponsorData || [],
-        venue_id: data.dashboardEvent?.venue?.id,
-      }}
-      formType="edit"
-      header="Edit Event"
-      loadingText={'Saving Event Changes'}
-      onSubmit={onSubmit}
-      submitText={'Save Event Changes'}
-    />
+    <div>
+      <EventForm
+        chapter={data.dashboardEvent.chapter}
+        data={{
+          ...rest,
+          sponsors: sponsorData || [],
+          venue_id: data.dashboardEvent?.venue?.id,
+        }}
+        formType="edit"
+        header="Edit Event"
+        loadingText={'Saving Event Changes'}
+        onSubmit={onSubmit}
+        submitText={'Save Event Changes'}
+      />
+      <Button onClick={onCancel}>Cancel Edit</Button>
+    </div>
   );
 };
 
