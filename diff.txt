@@ -1,0 +1,197 @@
+diff --git a/client/src/modules/dashboard/Chapters/pages/EditChapterPage.tsx b/client/src/modules/dashboard/Chapters/pages/EditChapterPage.tsx
+index 8a87f02e..c6a758bf 100644
+--- a/client/src/modules/dashboard/Chapters/pages/EditChapterPage.tsx
++++ b/client/src/modules/dashboard/Chapters/pages/EditChapterPage.tsx
+@@ -1,5 +1,6 @@
+ import { useRouter } from 'next/router';
+ import React, { ReactElement } from 'react';
++import { Button } from '@chakra-ui/react';
+ 
+ import {
+   useDashboardChapterQuery,
+@@ -58,16 +59,23 @@ export const EditChapterPage: NextPageWithLayout = () => {
+     }
+   };
+ 
++  const onCancel = () => {
++    router.push('/dashboard/chapters');
++  };
++
+   const isLoading = loading || !data;
+   if (isLoading || error) return <DashboardLoading error={error} />;
+ 
+   return (
+-    <ChapterForm
+-      data={data}
+-      onSubmit={onSubmit}
+-      loadingText={'Saving Chapter Changes'}
+-      submitText={'Save Chapter Changes'}
+-    />
++    <div>
++      <ChapterForm
++        data={data}
++        onSubmit={onSubmit}
++        loadingText={'Saving Chapter Changes'}
++        submitText={'Save Chapter Changes'}
++      />
++      <Button onClick={onCancel}>Cancel Edit</Button>
++    </div>
+   );
+ };
+ 
+diff --git a/client/src/modules/dashboard/Events/pages/EditEventPage.tsx b/client/src/modules/dashboard/Events/pages/EditEventPage.tsx
+index eb3e9923..8ca0c5b7 100644
+--- a/client/src/modules/dashboard/Events/pages/EditEventPage.tsx
++++ b/client/src/modules/dashboard/Events/pages/EditEventPage.tsx
+@@ -1,6 +1,7 @@
+ import NextError from 'next/error';
+ import { useRouter } from 'next/router';
+ import React, { ReactElement } from 'react';
++import { Button } from '@chakra-ui/react';
+ 
+ import {
+   useDashboardEventQuery,
+@@ -63,6 +64,10 @@ export const EditEventPage: NextPageWithLayout = () => {
+     }
+   };
+ 
++  const onCancel = () => {
++    router.push('/dashboard/events');
++  };
++
+   const isLoading = loading || !data;
+   if (isLoading || error) return <DashboardLoading error={error} />;
+   if (!data.dashboardEvent)
+@@ -76,19 +81,22 @@ export const EditEventPage: NextPageWithLayout = () => {
+     };
+   });
+   return (
+-    <EventForm
+-      chapter={data.dashboardEvent.chapter}
+-      data={{
+-        ...rest,
+-        sponsors: sponsorData || [],
+-        venue_id: data.dashboardEvent?.venue?.id,
+-      }}
+-      formType="edit"
+-      header="Edit Event"
+-      loadingText={'Saving Event Changes'}
+-      onSubmit={onSubmit}
+-      submitText={'Save Event Changes'}
+-    />
++    <div>
++      <EventForm
++        chapter={data.dashboardEvent.chapter}
++        data={{
++          ...rest,
++          sponsors: sponsorData || [],
++          venue_id: data.dashboardEvent?.venue?.id,
++        }}
++        formType="edit"
++        header="Edit Event"
++        loadingText={'Saving Event Changes'}
++        onSubmit={onSubmit}
++        submitText={'Save Event Changes'}
++      />
++      <Button onClick={onCancel}>Cancel Edit</Button>
++    </div>
+   );
+ };
+ 
+diff --git a/client/src/modules/dashboard/Sponsors/pages/EditSponsorPage.tsx b/client/src/modules/dashboard/Sponsors/pages/EditSponsorPage.tsx
+index 615ea9e8..fae2b9f3 100644
+--- a/client/src/modules/dashboard/Sponsors/pages/EditSponsorPage.tsx
++++ b/client/src/modules/dashboard/Sponsors/pages/EditSponsorPage.tsx
+@@ -1,6 +1,7 @@
+ import NextError from 'next/error';
+ import { useRouter } from 'next/router';
+ import React, { ReactElement } from 'react';
++import { Button } from '@chakra-ui/react';
+ 
+ import { useAlert } from '../../../../hooks/useAlert';
+ import { useParam } from '../../../../hooks/useParam';
+@@ -52,18 +53,25 @@ const EditSponsorPage: NextPageWithLayout = () => {
+     }
+   };
+ 
++  const onCancel = () => {
++    router.push('/dashboard/sponsors');
++  };
++
+   const isLoading = sponsorLoading || !data;
+   if (isLoading || error) return <DashboardLoading error={error} />;
+   if (!data.dashboardSponsor)
+     return <NextError statusCode={404} title="Sponsor not found" />;
+ 
+   return (
+-    <SponsorForm
+-      onSubmit={onSubmit}
+-      data={data}
+-      submitText="Save Sponsor Changes"
+-      loadingText="Saving Sponsor Changes"
+-    />
++    <div>
++      <SponsorForm
++        onSubmit={onSubmit}
++        data={data}
++        submitText="Save Sponsor Changes"
++        loadingText="Saving Sponsor Changes"
++      />
++      <Button onClick={onCancel}>Cancel Edit</Button>
++    </div>
+   );
+ };
+ 
+diff --git a/client/src/modules/dashboard/Venues/pages/EditVenuePage.tsx b/client/src/modules/dashboard/Venues/pages/EditVenuePage.tsx
+index 76feeb88..25d5fe6e 100644
+--- a/client/src/modules/dashboard/Venues/pages/EditVenuePage.tsx
++++ b/client/src/modules/dashboard/Venues/pages/EditVenuePage.tsx
+@@ -1,6 +1,7 @@
+ import { useRouter } from 'next/router';
+ import React, { ReactElement } from 'react';
+ import NextError from 'next/error';
++import { Button } from '@chakra-ui/react';
+ 
+ import {
+   useVenueQuery,
+@@ -57,6 +58,10 @@ export const EditVenuePage: NextPageWithLayout = () => {
+     }
+   };
+ 
++  const onCancel = () => {
++    router.push('/dashboard/venues');
++  };
++
+   const hasLoaded = !!venueData && !!chapterData;
+   const errors: Error[] = [];
+   if (venueError) errors.push(venueError);
+@@ -67,14 +72,17 @@ export const EditVenuePage: NextPageWithLayout = () => {
+     return <NextError statusCode={404} title={'Page not found'} />;
+ 
+   return (
+-    <VenueForm
+-      data={venueData}
+-      chapterData={chapterData}
+-      onSubmit={onSubmit}
+-      submitText={'Save Venue Changes'}
+-      chapterId={chapterId}
+-      loadingText={'Saving Venue Changes'}
+-    />
++    <div>
++      <VenueForm
++        data={venueData}
++        chapterData={chapterData}
++        onSubmit={onSubmit}
++        submitText={'Save Venue Changes'}
++        chapterId={chapterId}
++        loadingText={'Saving Venue Changes'}
++      />
++      <Button onClick={onCancel}>Cancel Edit</Button>
++    </div>
+   );
+ };
+ 
+
+gitpod snapshot link: https://gitpod.io/new/#snapshot/06397fc5-bea8-4864-9815-70221cc0a098
+
+alt gitpod snapshot workspace: https://gitpod.io#snapshot/933232d2-eebd-4b05-8f2f-d7218ac45af1
