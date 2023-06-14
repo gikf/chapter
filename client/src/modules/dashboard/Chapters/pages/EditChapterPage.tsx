@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
+import { Button } from '@chakra-ui/react';
 
 import {
-  CreateChapterInputs,
   useDashboardChapterQuery,
   useUpdateChapterMutation,
 } from '../../../../generated/graphql';
@@ -19,6 +19,10 @@ import {
   userDownloadQuery,
   userProfileQuery,
 } from '../../../profiles/graphql/queries';
+import {
+  ChapterFormData,
+  parseChapterData,
+} from '../components/ChapterFormUtils';
 
 export const EditChapterPage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -41,9 +45,9 @@ export const EditChapterPage: NextPageWithLayout = () => {
 
   const addAlert = useAlert();
 
-  const onSubmit = async (data: CreateChapterInputs) => {
+  const onSubmit = async (data: ChapterFormData) => {
     const { data: chapterData, errors } = await updateChapter({
-      variables: { chapterId, data: { ...data } },
+      variables: { chapterId, data: parseChapterData(data) },
     });
     if (errors) throw errors;
     if (chapterData) {
@@ -55,16 +59,23 @@ export const EditChapterPage: NextPageWithLayout = () => {
     }
   };
 
+  const onCancel = () => {
+    router.push('/dashboard/chapters');
+  };
+
   const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
 
   return (
-    <ChapterForm
-      data={data}
-      onSubmit={onSubmit}
-      loadingText={'Saving Chapter Changes'}
-      submitText={'Save Chapter Changes'}
-    />
+    <div>
+      <ChapterForm
+        data={data}
+        onSubmit={onSubmit}
+        loadingText={'Saving Chapter Changes'}
+        submitText={'Save Chapter Changes'}
+      />
+      <Button onClick={onCancel}>Cancel Edit</Button>
+    </div>
   );
 };
 

@@ -1,6 +1,7 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
+import { Button } from '@chakra-ui/react';
 
 import { useAlert } from '../../../../hooks/useAlert';
 import { useParam } from '../../../../hooks/useParam';
@@ -52,18 +53,25 @@ const EditSponsorPage: NextPageWithLayout = () => {
     }
   };
 
+  const onCancel = () => {
+    router.push('/dashboard/sponsors');
+  };
+
   const isLoading = sponsorLoading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.dashboardSponsor)
     return <NextError statusCode={404} title="Sponsor not found" />;
 
   return (
-    <SponsorForm
-      onSubmit={onSubmit}
-      data={data}
-      submitText="Save Sponsor Changes"
-      loadingText="Saving Sponsor Changes"
-    />
+    <div>
+      <SponsorForm
+        onSubmit={onSubmit}
+        data={data}
+        submitText="Save Sponsor Changes"
+        loadingText="Saving Sponsor Changes"
+      />
+      <Button onClick={onCancel}>Cancel Edit</Button>
+    </div>
   );
 };
 

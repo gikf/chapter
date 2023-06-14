@@ -75,6 +75,13 @@ export const DASHBOARD_EVENT = gql`
           name
         }
         subscribed
+        joined_date
+      }
+      event_tags {
+        tag {
+          id
+          name
+        }
       }
     }
   }
@@ -98,5 +105,11 @@ export const ChapterVenues = gql`
       id
       name
     }
+  }
+`;
+
+export const testEventCalendarAccess = gql`
+  query testEventCalendarEventAccess($eventId: Int!) {
+    testEventCalendarEventAccess(id: $eventId)
   }
 `;

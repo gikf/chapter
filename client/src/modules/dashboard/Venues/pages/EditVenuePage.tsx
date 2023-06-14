@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 import NextError from 'next/error';
+import { Button } from '@chakra-ui/react';
 
 import {
   useVenueQuery,
@@ -10,7 +11,7 @@ import {
 
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import VenueForm from '../components/VenueForm';
-import { VenueFormData } from '../components/VenueFormUtils';
+import { parseVenueData, VenueFormData } from '../components/VenueFormUtils';
 import { DASHBOARD_VENUE, DASHBOARD_VENUES } from '../graphql/queries';
 import { useAlert } from '../../../../hooks/useAlert';
 import { useParam } from '../../../../hooks/useParam';
@@ -40,16 +41,11 @@ export const EditVenuePage: NextPageWithLayout = () => {
   const addAlert = useAlert();
 
   const onSubmit = async (data: VenueFormData) => {
-    const { chapter_id, ...updateData } = data;
-
-    const latitude = parseFloat(String(data.latitude));
-    const longitude = parseFloat(String(data.longitude));
-
     const { data: venueData, errors } = await updateVenue({
       variables: {
         venueId,
-        chapterId: chapter_id,
-        data: { ...updateData, latitude, longitude },
+        chapterId: data.chapter_id,
+        data: parseVenueData(data),
       },
     });
     if (errors) throw errors;
@@ -62,6 +58,10 @@ export const EditVenuePage: NextPageWithLayout = () => {
     }
   };
 
+  const onCancel = () => {
+    router.push('/dashboard/venues');
+  };
+
   const hasLoaded = !!venueData && !!chapterData;
   const errors: Error[] = [];
   if (venueError) errors.push(venueError);
@@ -72,14 +72,17 @@ export const EditVenuePage: NextPageWithLayout = () => {
     return <NextError statusCode={404} title={'Page not found'} />;
 
   return (
-    <VenueForm
-      data={venueData}
-      chapterData={chapterData}
-      onSubmit={onSubmit}
-      submitText={'Save Venue Changes'}
-      chapterId={chapterId}
-      loadingText={'Saving Venue Changes'}
-    />
+    <div>
+      <VenueForm
+        data={venueData}
+        chapterData={chapterData}
+        onSubmit={onSubmit}
+        submitText={'Save Venue Changes'}
+        chapterId={chapterId}
+        loadingText={'Saving Venue Changes'}
+      />
+      <Button onClick={onCancel}>Cancel Edit</Button>
+    </div>
   );
 };
 
